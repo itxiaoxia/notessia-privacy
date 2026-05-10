@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notessia Support</title>
+  <style>
+    :root { color-scheme: light; --text:#1f2937; --muted:#6b7280; --line:rgba(148,163,184,.28); --panel:rgba(255,255,255,.86); --input:rgba(255,255,255,.96); --blue:#3b82f6; --blue-dark:#2563eb; --red:#dc2626; --green:#15803d; }
+    * { box-sizing: border-box; }
+    body {
+      min-height: 100vh; margin: 0; display: grid; place-items: center; padding: 32px 18px; color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at 18% 18%, rgba(102,187,151,.78), transparent 34%), radial-gradient(circle at 82% 16%, rgba(59,130,246,.70), transparent 38%), radial-gradient(circle at 76% 86%, rgba(137,72,185,.64), transparent 42%), radial-gradient(circle at 18% 84%, rgba(217,91,142,.52), transparent 40%), linear-gradient(135deg, #edf7f7 0%, #eef4ff 46%, #f7eef8 100%);
+    }
+    main { width: min(100%, 720px); }
+    .card {
+      position: relative; overflow: hidden; border: 1px solid rgba(255,255,255,.68); border-radius: 24px; background: var(--panel);
+      box-shadow: 0 24px 70px rgba(31,41,55,.22); backdrop-filter: blur(26px) saturate(1.35); -webkit-backdrop-filter: blur(26px) saturate(1.35);
+    }
+    .card::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.58), transparent 42%), repeating-linear-gradient(135deg, rgba(255,255,255,.10) 0 1px, transparent 1px 10px);
+    }
+    .content { position: relative; padding: clamp(26px, 5vw, 44px); }
+    header { text-align: center; padding-bottom: 26px; border-bottom: 1px solid var(--line); }
+    .icon {
+      width: 42px; height: 42px; margin: 0 auto 10px; display: grid; place-items: center; border: 1px solid rgba(148,163,184,.28);
+      border-radius: 14px; background: rgba(255,255,255,.58); box-shadow: inset 0 1px 0 rgba(255,255,255,.92), 0 10px 28px rgba(31,41,55,.10);
+    }
+    .icon svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    h1 { margin: 0; font-size: clamp(28px, 5vw, 38px); line-height: 1.12; letter-spacing: 0; }
+    .subtitle { margin: 10px 0 0; color: var(--muted); font-size: 16px; line-height: 1.6; }
+    form { display: grid; gap: 22px; padding-top: 26px; }
+    label { display: block; margin-bottom: 10px; color: #334155; font-weight: 700; font-size: 15px; }
+    .required { color: var(--red); } .optional { color: #94a3b8; font-weight: 500; }
+    textarea, input {
+      width: 100%; border: 1px solid rgba(148,163,184,.32); border-radius: 16px; background: var(--input); color: var(--text);
+      font: inherit; outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.85); transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+    textarea { min-height: 260px; resize: vertical; padding: 18px 20px; line-height: 1.6; }
+    input { height: 58px; padding: 0 20px; }
+    textarea:focus, input:focus { border-color: rgba(59,130,246,.72); background: #fff; box-shadow: 0 0 0 4px rgba(59,130,246,.14), inset 0 1px 0 rgba(255,255,255,.95); }
+    .actions { display: flex; align-items: center; justify-content: flex-end; gap: 14px; padding-top: 2px; }
+    button {
+      min-width: 150px; height: 54px; border: 1px solid rgba(59,130,246,.36); border-radius: 16px; background: linear-gradient(180deg, var(--blue), var(--blue-dark));
+      color: #fff; font: inherit; font-weight: 750; cursor: pointer; box-shadow: 0 14px 32px rgba(37,99,235,.24); transition: transform .16s ease, box-shadow .16s ease, opacity .16s ease;
+    }
+    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 18px 38px rgba(37,99,235,.30); }
+    button:disabled { cursor: not-allowed; opacity: .62; box-shadow: none; }
+    .status { min-height: 24px; margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+    .success { color: var(--green); } .error { color: var(--red); }
+    .fine-print { margin: 18px 0 0; color: rgba(75,85,99,.86); font-size: 13px; line-height: 1.6; text-align: center; }
+    .bot-field { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+    @media (max-width: 560px) {
+      body { padding: 18px 12px; } .card { border-radius: 20px; } textarea { min-height: 220px; }
+      .actions { align-items: stretch; flex-direction: column; } button { width: 100%; } .status { order: 2; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="card" aria-labelledby="support-title">
+      <div class="content">
+        <header>
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4z"></path><path d="M8 9h8"></path><path d="M8 13h5"></path></svg>
+          </div>
+          <h1 id="support-title">Notessia Support</h1>
+          <p class="subtitle">Tell us what happened or share a suggestion. Your feedback helps us improve Notessia.</p>
+        </header>
+        <form id="support-form" novalidate>
+          <div>
+            <label for="message">Feedback <span class="required">*</span></label>
+            <textarea id="message" name="message" required minlength="3" placeholder="Describe the issue or suggestion..." autocomplete="off"></textarea>
+          </div>
+          <div>
+            <label for="email">Contact Email <span class="required">*</span></label>
+            <input id="email" name="email" type="email" required inputmode="email" placeholder="your@email.com" autocomplete="email">
+          </div>
+          <label class="bot-field" for="botcheck">Leave this field empty</label>
+          <input class="bot-field" id="botcheck" name="botcheck" type="checkbox" tabindex="-1" autocomplete="off">
+          <div class="actions">
+            <p id="status" class="status" role="status" aria-live="polite"></p>
+            <button id="submit-button" type="submit">Send Feedback</button>
+          </div>
+        </form>
+        <p class="fine-print">A valid email is required. This page allows up to 5 successful submissions per device each day.</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit'
+    const WEB3FORMS_ACCESS_KEYS = ['ceabd5f0-6cf2-4c50-8cd1-f097c83b6c43', '38b5dfee-b71d-46a6-a454-eab74cf15039', '55958876-6ec0-4cef-9811-88d1021ad06d', '659b85d5-de06-49e8-94ec-a06c4117e855']
+    const REQUEST_TIMEOUT_MS = 8000
+    const DAILY_LIMIT = 5
+    const LIMIT_PREFIX = 'notessia-support-feedback-count:'
+    const form = document.getElementById('support-form')
+    const messageInput = document.getElementById('message')
+    const emailInput = document.getElementById('email')
+    const submitButton = document.getElementById('submit-button')
+    const statusText = document.getElementById('status')
+    const today = () => formatDateTime().slice(0, 10)
+    const getPlatformInfo = () => /Macintosh|Mac OS/.test(navigator.userAgent) ? 'macOS' : /Windows/.test(navigator.userAgent) ? 'Windows' : /Linux/.test(navigator.userAgent) ? 'Linux' : /iPhone|iPad/.test(navigator.userAgent) ? 'iOS' : /Android/.test(navigator.userAgent) ? 'Android' : 'Unknown'
+    const formatDateTime = (date = new Date()) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}:${String(date.getSeconds()).padStart(2, '0')}`
+    const setStatus = (message, type = '') => { statusText.textContent = message; statusText.className = `status ${type}`.trim() }
+    const isValidEmail = (email) => /^[A-Z0-9._%+-]+@(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+[A-Z]{2,63}$/i.test(email) && !email.includes('..')
+    const readSentCount = () => Math.max(0, Number(localStorage.getItem(`${LIMIT_PREFIX}${today()}`)) || 0)
+    const remainingSends = () => Math.max(DAILY_LIMIT - readSentCount(), 0)
+    function refreshLimitState() {
+      const remaining = remainingSends()
+      if (remaining <= 0) { submitButton.disabled = true; setStatus('Daily feedback limit reached on this device. Please try again tomorrow.', 'error') }
+      return remaining
+    }
+    function recordSuccessfulSend() {
+      // 中文维护说明：GitHub Pages 没有服务端身份，单文件只能用 localStorage 做本机/本浏览器每日 5 条的轻量限制。
+      localStorage.setItem(`${LIMIT_PREFIX}${today()}`, String(readSentCount() + 1))
+      return refreshLimitState()
+    }
+    function getShuffledAccessKeys(accessKeys) {
+      const keys = [...accessKeys]
+      // 中文维护说明：沿用软件内反馈 Worker 的 Fisher-Yates 洗牌策略，确保四个 Web3Forms key 首选概率一致。
+      for (let i = keys.length - 1; i > 0; i -= 1) { const j = Math.floor(Math.random() * (i + 1)); [keys[i], keys[j]] = [keys[j], keys[i]] }
+      return keys
+    }
+    function buildPayload(accessKey, feedback) {
+      const message = ['Feedback:', feedback.message, '', 'Additional Information', `Platform: ${getPlatformInfo()}`, `Time: ${formatDateTime()}`, feedback.email ? `Contact Email: ${feedback.email}` : 'Contact Email: (not provided)'].join('\n')
+      const payload = { access_key: accessKey, subject: `Notessia Support Request - ${getPlatformInfo()}`, from_name: feedback.email || 'Notessia User', message, botcheck: document.getElementById('botcheck').checked }
+      if (feedback.email) { payload.replyto = feedback.email; payload.email = feedback.email }
+      return payload
+    }
+    async function submitWithAccessKey(accessKey, feedback) {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+      try {
+        const response = await fetch(WEB3FORMS_API_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(buildPayload(accessKey, feedback)), signal: controller.signal })
+        const result = await response.json().catch(() => null)
+        return response.ok && result?.success
+      } catch { return false } finally { clearTimeout(timeoutId) }
+    }
+    async function sendFeedback(feedback) {
+      // 中文维护说明：静态页没有应用内队列和 Worker，因此只保留“随机 key + 失败自动切换下一个”的核心发送策略。
+      for (const accessKey of getShuffledAccessKeys(WEB3FORMS_ACCESS_KEYS)) if (await submitWithAccessKey(accessKey, feedback)) return true
+      return false
+    }
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault()
+      const feedback = { message: messageInput.value.trim(), email: emailInput.value.trim() }
+      if (refreshLimitState() <= 0) return
+      if (!feedback.message) { setStatus('Please enter your feedback before sending.', 'error'); messageInput.focus(); return }
+      if (!feedback.email) { setStatus('Please enter your contact email before sending.', 'error'); emailInput.focus(); return }
+      if (!emailInput.validity.valid || !isValidEmail(feedback.email)) { setStatus('Please enter a valid email address.', 'error'); emailInput.focus(); return }
+      submitButton.disabled = true; submitButton.textContent = 'Sending...'; setStatus('Sending your feedback...')
+      const success = await sendFeedback(feedback)
+      if (success) { form.reset(); const left = recordSuccessfulSend(); if (left > 0) setStatus(`Thank you. Your feedback has been sent. ${left} submissions left today.`, 'success') }
+      else { submitButton.disabled = false; setStatus('We could not send your feedback. Please try again later.', 'error') }
+      if (remainingSends() > 0) { submitButton.disabled = false; submitButton.textContent = 'Send Feedback' }
+    })
+    refreshLimitState()
+  </script>
+</body>
+</html>
